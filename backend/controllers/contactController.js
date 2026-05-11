@@ -1,5 +1,9 @@
 import Contact from "../models/Contact.js";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
+
+const resend = new Resend(
+  process.env.RESEND_API_KEY
+);
 
 export const submitContact = async (
   req,
@@ -12,7 +16,7 @@ export const submitContact = async (
       message,
     } = req.body;
 
-    // Save message to MongoDB
+    // Save to MongoDB
     const newContact =
       await Contact.create({
         name,
@@ -20,54 +24,19 @@ export const submitContact = async (
         message,
       });
 
-    // Gmail SMTP Transport
-    const transporter =
-      nodemailer.createTransport({
-        host: "smtp.gmail.com",
+    // Send Email using Resend
+    await resend.emails.send({
+      from:
+        "Portfolio <onboarding@resend.dev>",
 
-        port: 587,
-
-        secure: false,
-
-        auth: {
-          user: process.env.EMAIL_USER,
-
-          pass: process.env.EMAIL_PASS,
-        },
-
-        tls: {
-          rejectUnauthorized: false,
-        },
-
-        connectionTimeout: 10000,
-
-        greetingTimeout: 10000,
-
-        socketTimeout: 10000,
-      });
-
-    // Verify SMTP connection
-    await transporter.verify();
-
-    console.log(
-      "SMTP Connected Successfully"
-    );
-
-    // Send Email
-    await transporter.sendMail({
-      from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
-
-      to: process.env.EMAIL_USER,
+      to: "hireamit.dev@gmail.com",
 
       subject:
         "🚀 New Portfolio Contact Message",
 
       html: `
         <div style="font-family:Arial;padding:20px;">
-          
-          <h2>
-            New Portfolio Contact
-          </h2>
+          <h2>New Portfolio Contact</h2>
 
           <p>
             <strong>Name:</strong>
@@ -91,29 +60,21 @@ export const submitContact = async (
           ">
             ${message}
           </div>
-
         </div>
       `,
     });
 
     return res.status(201).json({
       success: true,
-
       message:
         "Message sent successfully",
-
       data: newContact,
     });
-
   } catch (error) {
-    console.log(
-      "CONTACT ERROR:",
-      error
-    );
+    console.log(error);
 
     return res.status(500).json({
       success: false,
-
       message:
         "Failed to send message",
     });
