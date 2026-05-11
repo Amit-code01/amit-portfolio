@@ -24,18 +24,34 @@ export const submitContact = async (
     const transporter =
       nodemailer.createTransport({
         host: "smtp.gmail.com",
+
         port: 587,
+
         secure: false,
 
         auth: {
           user: process.env.EMAIL_USER,
+
           pass: process.env.EMAIL_PASS,
         },
 
         tls: {
           rejectUnauthorized: false,
         },
+
+        connectionTimeout: 10000,
+
+        greetingTimeout: 10000,
+
+        socketTimeout: 10000,
       });
+
+    // Verify SMTP connection
+    await transporter.verify();
+
+    console.log(
+      "SMTP Connected Successfully"
+    );
 
     // Send Email
     await transporter.sendMail({
@@ -48,7 +64,10 @@ export const submitContact = async (
 
       html: `
         <div style="font-family:Arial;padding:20px;">
-          <h2>New Portfolio Contact</h2>
+          
+          <h2>
+            New Portfolio Contact
+          </h2>
 
           <p>
             <strong>Name:</strong>
@@ -72,22 +91,29 @@ export const submitContact = async (
           ">
             ${message}
           </div>
+
         </div>
       `,
     });
 
     return res.status(201).json({
       success: true,
+
       message:
         "Message sent successfully",
+
       data: newContact,
     });
 
   } catch (error) {
-    console.log(error);
+    console.log(
+      "CONTACT ERROR:",
+      error
+    );
 
     return res.status(500).json({
       success: false,
+
       message:
         "Failed to send message",
     });
