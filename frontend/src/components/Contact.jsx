@@ -1,9 +1,8 @@
 import { useState } from "react";
 
-import axios from "axios";
 
 import { motion } from "framer-motion";
-
+import API from "../api/api";
 import {
   FaGithub,
   FaLinkedin,
@@ -58,10 +57,10 @@ export default function Contact() {
       setError("");
 
       const response =
-        await axios.post(
-          "http://localhost:5000/api/contact",
-          formData
-        );
+       await API.post(
+  "/contact",
+  formData
+);
 
       setSuccess(
         response.data.message ||

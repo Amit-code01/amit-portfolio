@@ -21,7 +21,9 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("API running...");
 });
-
+app.get("/api/test", (req, res) => {
+  res.json({ message: "API working fine" });
+});
 app.use("/api/projects", projectRoutes);
 
 app.use("/api/contact", contactRoutes);
