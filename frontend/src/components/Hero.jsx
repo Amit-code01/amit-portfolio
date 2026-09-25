@@ -15,8 +15,8 @@ import {
 import { profile } from "../data/portfolio";
 
 const roles = [
+    { line1: "SOFTWARE", highlight: "DEVELOPER", line2: "ENGINEER" },
   { line1: "FULL STACK", highlight: "AI", line2: "DEVELOPER" },
-  { line1: "SOFTWARE", highlight: "DEVELOPER", line2: "ENGINEER" },
   { line1: "MERN", highlight: "STACK", line2: "DEVELOPER" },
 ];
 
